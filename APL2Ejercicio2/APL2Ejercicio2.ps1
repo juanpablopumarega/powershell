@@ -96,13 +96,16 @@ Param(
     }
 
 
-$palabras.GetEnumerator() | sort -Property Value -Descending | Export-Csv -Path "$Entrada.salida" -Delimiter "," -NoTypeInformation -Encoding Unicode
+#Ordeno el contenido del hash y lo exporto a CSV
+    $palabras.GetEnumerator() | sort -Property Value -Descending |Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path "$Entrada.salida" -Delimiter "," -NoTypeInformation -Encoding Unicode
+
+#Muestro por pantalla los primeros 5 (incluyendo el titulo)
+    Get-Content "$Entrada.salida" | Select -first 6
 
 
 #Removiendo los archivos temporales creados
-    #Remove-Item -Path "$StopWords.mayus";
-    #Remove-Item -Path "$Entrada.mayus"
-
+    Remove-Item -Path "$StopWords.mayus";
+    Remove-Item -Path "$Entrada.mayus"
 
 
 
