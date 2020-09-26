@@ -96,7 +96,7 @@ Param(
     }
 
 
-$palabras.GetEnumerator() | sort -Property Value -Descending | Out-File -FilePath "$Entrada.orden"
+$palabras.GetEnumerator() | sort -Property Value -Descending | Export-Csv -Path "$Entrada.salida" -Delimiter "," -NoTypeInformation -Encoding Unicode
 
 
 #Removiendo los archivos temporales creados
