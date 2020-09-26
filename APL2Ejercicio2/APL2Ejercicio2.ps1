@@ -54,7 +54,7 @@ Param(
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [string]$Resultado
+    [string]$Resultado=$PWD
 )
 
 #Impresiones en pantalla de ejemplo
