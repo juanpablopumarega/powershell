@@ -57,8 +57,52 @@ Param(
     [string]$Resultado
 )
 
+#Impresiones en pantalla de ejemplo
+    Write-Output ("El parametro -StopWords contiene $StopWords")
+    Write-Output ("El parametro -Entrada contiene $Entrada")
+    Write-Output ("El parametro -Resultado contiene $Resultado")
 
-Write-Output ("El parametro -StopWords contiene $StopWords")
-Write-Output ("El parametro -Entrada contiene $Entrada")
-Write-Output ("El parametro -Resultado contiene $Resultado")
+#Creamos un file temporal del fie de Entrada (si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
+    if ((Get-Content -Path "$Entrada").length -ne $Null) {
+        (Get-Content "$Entrada" -Raw).ToUpper() | Out-File "$Entrada.mayus"
+    } else {
+        Write-Output "El archivo $Entrada esta vacio"
+        }
+
+#Creamos un file temporal del file de StopWords(si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
+    if ((Get-Content -Path "$StopWords").length -ne $Null) {
+        (Get-Content "$StopWords" -Raw).ToUpper() | Out-File "$StopWords.mayus"
+    } else {
+        Write-Output "El archivo $StopWords esta vacio"
+        }
+
+#Eliminamos las StopWords del file de Entrada.mayus (temporal)
+    foreach ($item in (Get-Content "$StopWords")){
+      (Get-Content -path "$Entrada.mayus" -Raw) -replace "\b$item\b",'' | Set-Content "$Entrada.mayus"  
+    }
+    
+
+#Generamos un array con la cantidad de ocurrencias por palabra
+    $palabras=@{};
+
+    foreach ($word in (-split (Get-Content -path "$Entrada.mayus"))){
+        if($word -ne ""){ #Descarto las lineas vacias
+            if($palabras[$word] -eq $Null){
+                $palabras[$word]=1;
+            } else {
+                $palabras[$word] = $palabras[$word] + 1;
+               }
+        }
+    }
+
+
+$palabras.GetEnumerator() | sort -Property Value -Descending | Out-File -FilePath "$Entrada.orden"
+
+
+#Removiendo los archivos temporales creados
+    #Remove-Item -Path "$StopWords.mayus";
+    #Remove-Item -Path "$Entrada.mayus"
+
+
+
 
