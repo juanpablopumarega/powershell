@@ -54,13 +54,19 @@ Param(
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
+    [ValidateScript({
+                    if(-Not ($_ | Test-Path) ){
+                      throw "No existe el directorio o el File especificado";
+                      }
+                    return $true 
+                    })]
     [string]$Resultado=$PWD
 )
 
 #Impresiones en pantalla de ejemplo
-    Write-Output ("El parametro -StopWords contiene $StopWords")
-    Write-Output ("El parametro -Entrada contiene $Entrada")
-    Write-Output ("El parametro -Resultado contiene $Resultado")
+    #Write-Output ("El parametro -StopWords contiene $StopWords")
+    #Write-Output ("El parametro -Entrada contiene $Entrada")
+    #Write-Output ("El parametro -Resultado contiene $Resultado")
 
 #Creamos un file temporal del fie de Entrada (si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
     if ((Get-Content -Path "$Entrada").length -ne $Null) {
