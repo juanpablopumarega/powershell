@@ -81,7 +81,6 @@ Param(
       (Get-Content -path "$Entrada.mayus" -Raw) -replace "\b$item\b",'' | Set-Content "$Entrada.mayus"  
     }
     
-
 #Generamos un array con la cantidad de ocurrencias por palabra
     $palabras=@{};
 
@@ -95,17 +94,17 @@ Param(
         }
     }
 
+#Creamos el nombre de la variable de salida
+    [string]$OutputFileName=$Resultado + "frecuencias_" + [System.IO.Path]::GetFileNameWithoutExtension($Entrada) + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 #Ordeno el contenido del hash y lo exporto a CSV
-    $palabras.GetEnumerator() | sort -Property Value -Descending |Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path "$Entrada.salida" -Delimiter "," -NoTypeInformation -Encoding Unicode
+    $palabras.GetEnumerator() | sort -Property Value -Descending |Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path $OutputFileName -Delimiter "," -NoTypeInformation -Encoding Unicode
 
 #Muestro por pantalla los primeros 5 (incluyendo el titulo)
-    Get-Content "$Entrada.salida" | Select -first 6
-
+    Get-Content "$OutputFileName" | Select -first 6
 
 #Removiendo los archivos temporales creados
     Remove-Item -Path "$StopWords.mayus";
-    Remove-Item -Path "$Entrada.mayus"
+    Remove-Item -Path "$Entrada.mayus";
 
-
-
+#FIN
