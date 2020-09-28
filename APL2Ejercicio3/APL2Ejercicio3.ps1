@@ -37,7 +37,7 @@ Param(
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [Int]$Umbral,
+    [String]$Umbral="-1",
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
@@ -50,12 +50,42 @@ Param(
     [string]$Resultado=$PWD
 )
 
+#Calculamos el promedio de los files
+    if($Umbral.Equals("-1")){
+        $Umbral=Get-ChildItem -Path $Path -File -Recurse | Measure-Object -Average Length | Select-Object -ExpandProperty average
+    }
+
 #Impresiones en pantalla de ejemplo
-    Write-Output ("El parametro -Path contiene $Path")
-    Write-Output ("El parametro -Umbral contiene $Umbral")
-    Write-Output ("El parametro -Resultado contiene $Resultado")
+    #Write-Output ("El parametro -Path contiene $Path")
+    #Write-Output ("El parametro -Umbral contiene $Umbral")
+    #Write-Output ("El parametro -Resultado contiene $Resultado")
 
 #Creamos el nombre de la variable de salida
     [string]$OutputFileName=$Resultado + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+
+#Armo el listado de los archivos a analizar
+$ResultadoBusqueda=Get-ChildItem -Path $Path -File -Recurse -Name
+$ResultadoBusqueda
+
+#Generamos un array con la cantidad de ocurrencias por palabra
+    $files=@{};
+
+    foreach($PathfileName in $ResultadoBusqueda) {
+    
+        $fileName=[System.IO.Path]::GetFileName($PathfileName)
+
+        if($files.ContainsKey($fileName)){
+            $files[$fileName] = $files[$fileName] + 1;
+        } else {
+            $files[$fileName]=1;
+        }
+
+    }
+
+$files
+
+
+
+
 
 #FIN
