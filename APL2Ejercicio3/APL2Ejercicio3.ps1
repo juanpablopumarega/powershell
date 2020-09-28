@@ -63,29 +63,40 @@ Param(
 #Creamos el nombre de la variable de salida
     [string]$OutputFileName=$Resultado + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
-#Armo el listado de los archivos a analizar
-$ResultadoBusqueda=Get-ChildItem -Path $Path -File -Recurse -Name
-$ResultadoBusqueda
-
-#Generamos un array con la cantidad de ocurrencias por palabra
-    $files=@{};
-
-    foreach($PathfileName in $ResultadoBusqueda) {
+#Armo una tabla con los archivos a analizar
+    $table = Get-ChildItem -Path $Path -File -Recurse | Select-Object Name,Directory,Length,LastWriteTime
     
-        $fileName=[System.IO.Path]::GetFileName($PathfileName)
+#Generamos un array con la cantidad de ocurrencias por files
+    $arraydefiles=@{};
 
-        if($files.ContainsKey($fileName)){
-            $files[$fileName] = $files[$fileName] + 1;
-        } else {
-            $files[$fileName]=1;
+    foreach($linea in $table) {
+    
+            $filename=$linea.Name;
+
+            if($arraydefiles.ContainsKey($filename)){
+                $arraydefiles[$filename] = $arraydefiles[$filename] + 1;
+            } else {
+                $arraydefiles[$filename]=1;
+            }
+
         }
 
-    }
-
-$files
+$arraydefiles
 
 
 
 
+
+
+
+
+
+
+
+#$variable2=$table[0].Directory;
+#
+#Write-Output "Aca empieza la magia de la tabla:"
+#Write-Output "Name: $variable1"
+#Write-Output "Directorio: $variable2"
 
 #FIN
