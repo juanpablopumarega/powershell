@@ -37,7 +37,7 @@ Param(
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [String]$Umbral="-1",
+    [Int]$Umbral="-1",
 
     [parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
@@ -50,9 +50,11 @@ Param(
     [string]$Resultado=$PWD
 )
 
-#Calculamos el promedio de los files
+#Calculamos el promedio de los files si el umbral no existe
     if($Umbral.Equals("-1")){
         $Umbral=Get-ChildItem -Path $Path -File -Recurse | Measure-Object -Average Length | Select-Object -ExpandProperty average
+    } else {
+        $Umbral=$Umbral*1024
     }
 
 #Impresiones en pantalla de ejemplo
@@ -64,7 +66,7 @@ Param(
     [string]$OutputFileName=$Resultado + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 #Armo una tabla con los archivos a analizar
-    $table = Get-ChildItem -Path $Path -File -Recurse | Select-Object Name,Directory,Length,LastWriteTime
+    $table = Get-ChildItem -Path $Path -File -Recurse #| Select-Object Name,Directory,Length,LastWriteTime
     
 #Generamos un array con la cantidad de ocurrencias por files
     $arraydefiles=@{};
@@ -81,22 +83,21 @@ Param(
 
         }
 
-$arraydefiles
+#Buscamos los archivos duplicados y los informamos
+    Write-Output "ARCHIVOS DUPLICADOS" >> $OutputFileName
 
+    foreach($filename in $arraydefiles.Keys) {
+        if($arraydefiles[$filename] -gt 1){
+            $table | Where-Object {$_.Name -eq "$filename"} | Format-Table -Property Name,Directory,Length,LastWriteTime >> $OutputFileName
+        }
+    }
 
+#Buscamos los que superen el Umbral y los informamos
+    Write-Output "ARCHIVOS QUE SUPERAN EL UMBRAL: $Umbral" >> $OutputFileName
 
+    $table | Where-Object {$_.Length -gt $Umbral} | Format-Table -Property Name,Directory,Length,LastWriteTime >> $OutputFileName
 
-
-
-
-
-
-
-
-#$variable2=$table[0].Directory;
-#
-#Write-Output "Aca empieza la magia de la tabla:"
-#Write-Output "Name: $variable1"
-#Write-Output "Directorio: $variable2"
+#Escribimos el mismo resultado generado en el archivo
+    Get-Content -Path $OutputFileName
 
 #FIN
