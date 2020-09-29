@@ -70,8 +70,22 @@ param([parameter(Mandatory=$true)]
     [string]$Out
 )
 
-$Aria
-$Tags
-$Web
-$Out
+$FileHTML = Get-Content $Web
 
+$FileArias = Get-Content $Aria
+
+$FileTags = Get-Content $Tags
+
+[int]$i = 1
+
+$Array = @{}
+
+foreach($linea in $FileHTML){
+    $Array[$i] = $linea
+    $i ++
+}
+
+
+#$Array |Format-Table -property Name,Value| Where-Object Value -in "div"
+
+$Array|where{$_.Value -like "*div*"}
