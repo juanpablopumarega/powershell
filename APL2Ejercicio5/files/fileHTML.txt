@@ -1,0 +1,25 @@
+<div class="text" aria-labelledby>
+       <label id="tp1-label" for="nombre">
+           Nombre:
+       </label>
+       
+	<br>
+	<br>
+	<br>
+    <input type="text" id="nombre" name="nombre" size="20" aria-labelledby="tp1-label" aria-describedby="tp1" aria-required="true" />
+
+        <input>
+         <br aria-labelledby>
+ 
+ 	<link> 
+            "asdsadasfds"
+        </link>
+ 	<link> 
+            "asdsadasfds"
+        </link>
+       
+       <div id="tp1" class="tooltip" role="tooltip" aria-hidden="true" aria-labelledby="tp1-label">
+           El nombre es obligatorio
+       </div>
+</div>
+div
