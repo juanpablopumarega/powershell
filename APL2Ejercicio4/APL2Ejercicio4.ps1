@@ -57,23 +57,30 @@ function global:Detener-Proceso()
         
         foreach ($proc in $ProcessName)
         {
+            
             try{
-                    Stop-Process -Name $proc -Force
-                    Write-Output "El proceso $proc fue detenido exitosamente"
+                    #Get-WmiObject Win32_Process -Filter "name=$match" | Select CreationDate, ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}}|Sort-Object UserName, Name, ProcessId | Format-Table >> $Global:OutputFileName
+                    Stop-Process -Name "$proc" -Force
                 }
             catch{
-                Write-Warning "El proceso $proc no existe en el sistema"
+                
+                Write-Warning " El proceso $proc no existe en el sistema"
             }
         }
     }
 }
+
+
 function global:Blacklist-Reader ()
 {
   Process{
         $BlackContent = Get-Content "$Global:Blacklist"
+        #Write-Host "El archivo de salida, en la primer funcion es: $Global:OutputFileName"
         foreach( $proc in $BlackContent ){
             try{
-                get-process -Name $proc* | Select-Object -Unique -Property ProcessName | Detener-Proceso
+                    $match=$proc + ".exe"
+                    Get-WmiObject Win32_Process -Filter "name='$match'" | Select CreationDate, ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}}|Sort-Object UserName, Name, ProcessId | Format-List >> $Global:OutputFileName
+                    get-process -Name $proc* | Select-Object -Unique -Property ProcessName | global:Detener-Proceso
                 }
             catch{
              Write-Warning "El proceso $proc no existe en el sistema"
@@ -92,9 +99,20 @@ $Timer.Interval  = 10000
 
 $Global:blacklist= $Blacklist
 
+$Global:OutputFileName = $Resultado + "\" + "blacklist" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+
+
+
+
 Register-ObjectEvent -InputObject $Timer  -EventName Elapsed  -SourceIdentifier TimerEvent  -Action { global:Blacklist-Reader
 }
 $Timer.Start()
 
 
+
+<#
+Get-WmiObject Win32_Process -Filter "name='Code.exe'" | 
+Select ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}} | 
+Sort-Object UserName, Name, ProcessId
+#>
 
