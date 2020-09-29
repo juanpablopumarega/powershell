@@ -88,4 +88,6 @@ foreach($linea in $FileHTML){
 
 #$Array |Format-Table -property Name,Value| Where-Object Value -in "div"
 
-$Array|where{$_.Value -like "*div*"}
+#$Array|where{$_.Value -like "*div*"}
+
+$prueba = {$Array.Value -like "*div*"}
