@@ -25,6 +25,7 @@
     
 
 .EXAMPLE
+.\APL2Ejercicio5.ps1 -Aria "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileArias.txt" -Tags "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileTags.txt" -Web "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileHTML.txt" -Out "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\"
 
 #>
 
@@ -36,7 +37,7 @@ param([parameter(Mandatory=$true)]
                         }
                      return $true 
                      })]
-    [string]$aria,
+    [string]$Aria,
 
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
@@ -46,7 +47,7 @@ param([parameter(Mandatory=$true)]
                         }
                      return $true 
                      })]
-    [string]$tags,
+    [string]$Tags,
 
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
@@ -56,7 +57,7 @@ param([parameter(Mandatory=$true)]
                         }
                      return $true 
                      })]
-    [string]$web,
+    [string]$Web,
 
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
@@ -66,7 +67,11 @@ param([parameter(Mandatory=$true)]
                         }
                      return $true 
                      })]
-    [string]$out
+    [string]$Out
 )
 
+$Aria
+$Tags
+$Web
+$Out
 
