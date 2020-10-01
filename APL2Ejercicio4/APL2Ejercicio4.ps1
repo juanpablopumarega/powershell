@@ -26,8 +26,8 @@ Param(
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({
-                     if(-Not ($_ | Test-Path) ){
-                        throw "No existe el directorio o el File especificado";
+                     if(-Not (Test-Path $_ -PathType Leaf) ){
+                        throw "No existe el File especificado";
                         }
                      return $true 
                      })]
@@ -80,18 +80,20 @@ function global:Blacklist-Reader ()
         # Cargo y recorro un array con los nombres de los procesos a cerrar, y los envio a la funcion Detener-Proceso
         foreach( $proc in $BlackContent ){
             try{
-                    $match=$proc + ".exe"
-                    
-                    # Guardo en un archivo como lista, fecha de creacion, pid, nombre
-                    Get-WmiObject Win32_Process -Filter "name='$match'" | Select CreationDate, ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}}|Sort-Object UserName, Name, ProcessId | Format-List >> $Global:OutputFileName
-                    
-                    # Envio los nombres de los procesos que se encontraron corriendo
-                    get-process -Name $proc* | Select-Object -Unique -Property ProcessName | global:Detener-Proceso
+                $match=$proc + ".exe"
+
+                # Guardo en un archivo como lista, fecha de creacion, pid, nombre
+                Get-WmiObject Win32_Process -Filter "name='$match'" | Select @{n='CreationDate'; e={$_.ConvertToDateTime($_.CreationDate)}}, ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}}|Sort-Object UserName, Name, ProcessId | Format-Table -HideTableHeaders >> $Global:OutputFileName
+
+                # Envio los nombres de los procesos que se encontraron corriendo
+                get-process -Name $proc* | Select-Object -Unique -Property ProcessName | global:Detener-Proceso
                 }
             catch{
-             Write-Warning "El proceso $proc no existe en el sistema"
+                 Write-Warning "El proceso $proc no existe en el sistema"
             }
         }
+        
+    
   }
 } 
 
@@ -103,7 +105,14 @@ $Timer = New-Object -Type Timers.Timer
 $Timer.Interval  = 10000
 
 # Declaracion de las variables como globales para que se puedan ver desde el entorno de las funciones.
-$Global:blacklist= $Blacklist
+# Se verifica que el archivo de Blacklist no esté vacío para de ser así, cerrar el proceso y no efectuar tareas.
+if(Get-Content $Blacklist) {
+    $Global:blacklist= $Blacklist
+}
+else {
+    Write-Host "El archivo blacklist está vacío."
+    exit 0;
+}
 
 # Formo la ruta del archivo de salida.
 $Global:OutputFileName = $Resultado + "\" + "blacklist" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
