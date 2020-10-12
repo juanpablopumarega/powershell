@@ -25,7 +25,7 @@
     
 
 .EXAMPLE
-.\APL2Ejercicio5.ps1 -Aria "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileArias.txt" -Tags "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileTags.txt" -Web "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileHTML.txt" -Out "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files"
+.\APL2Ejercicio5.ps1 -Aria ".\APL2Ejercicio5\files\fileArias.txt" -Tags ".\APL2Ejercicio5\files\fileTags.txt" -Web ".\APL2Ejercicio5\files\fileHTML.txt" -Out ".\APL2Ejercicio5\files"
 
 #>
 
@@ -74,10 +74,9 @@ param([parameter(Mandatory=$true)]
 $FileHTML = Get-Content $web;
 $FileArias = Get-Content $Aria;
 $FileTags = Get-Content $Tags;
+
 #Creamos el nombre de la variable de salida
 [string]$OutputFileName=$Out + "accessibilityTest_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
-
-
 
 $miClase = @{
     tag = "";
@@ -87,25 +86,23 @@ $miClase = @{
 
 $obj = [pscustomobject]::new($miClase);
 
+#Creamos un contador para saber cuantos Tags hay en el file y saber donde poner la coma en el archivo de salida
 $cont = 0;
 foreach($tag in (-split "$FileTags")){
     $cont++;
 }
+
 $limitCont = $cont;
 
 "{" >> $OutputFileName;
 "`t["  >> $OutputFileName;
 
-foreach($tag in (-split "$FileTags")){
-    
+foreach($tag in (-split "$FileTags")){ 
+
     if($tag -ne ""){
-    
         $FileHTML2 = $FileHTML | Select-String -pattern "<$tag" | Select-Object Linenumber, Line;
-
         foreach($arias in (-split $FileArias)){
-
             if($arias -ne ""){
-
                 $FileHTML2 = $FileHTML2 | Where Line -NotMatch $arias | Select-Object Linenumber, Line;
                 }
             }
@@ -114,7 +111,6 @@ foreach($tag in (-split "$FileTags")){
         $obj.array = $FileHTML2.LineNumber;
         $obj.cantidad = $FileHTML2.LineNumber.Length;
     
-
         $p = ConvertTo-Json $obj; 
         
         if($cont -ne 0 -and $cont -ne $limitCont){
@@ -122,7 +118,9 @@ foreach($tag in (-split "$FileTags")){
         }
     
         "`t`t" + $p >> $OutputFileName;
+		
         $cont--;
+		
         }
     }
 
