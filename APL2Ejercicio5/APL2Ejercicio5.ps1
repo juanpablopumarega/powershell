@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Actividad Práctica de Laboratorio Nro: 2 - Primera Entrega
     Integrantes:
@@ -25,7 +25,7 @@
     
 
 .EXAMPLE
-.\APL2Ejercicio5.ps1 -Aria "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileArias.txt" -Tags "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileTags.txt" -Web "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\fileHTML.txt" -Out "C:\Users\natal\OneDrive\Desktop\SistemasOperativos\Repositorio\powershell\APL2Ejercicio5\files\"
+.\APL2Ejercicio5.ps1 -Aria "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileArias.txt" -Tags "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileTags.txt" -Web "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files\fileHTML.txt" -Out "C:\Users\Lenovo\Desktop\Facultad\Programacion Avanzada\powershell\APL2Ejercicio5\files"
 
 #>
 
@@ -70,24 +70,63 @@ param([parameter(Mandatory=$true)]
     [string]$Out
 )
 
-$FileHTML = Get-Content $Web
 
-$FileArias = Get-Content $Aria
+$FileHTML = Get-Content $web;
+$FileArias = Get-Content $Aria;
+$FileTags = Get-Content $Tags;
+#Creamos el nombre de la variable de salida
+[string]$OutputFileName=$Out + "accessibilityTest_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
-$FileTags = Get-Content $Tags
 
-[int]$i = 1
 
-$Array = @{}
+$miClase = @{
+    tag = "";
+    array = @{};
+    cantidad =0;
+    }
 
-foreach($linea in $FileHTML){
-    $Array[$i] = $linea
-    $i ++
+$obj = [pscustomobject]::new($miClase);
+
+$cont = 0;
+foreach($tag in (-split "$FileTags")){
+    $cont++;
 }
+$limitCont = $cont;
 
+"{" >> $OutputFileName;
+"`t["  >> $OutputFileName;
 
-#$Array |Format-Table -property Name,Value| Where-Object Value -in "div"
+foreach($tag in (-split "$FileTags")){
+    
+    if($tag -ne ""){
+    
+        $FileHTML2 = $FileHTML | Select-String -pattern "<$tag" | Select-Object Linenumber, Line;
 
-#$Array|where{$_.Value -like "*div*"}
+        foreach($arias in (-split $FileArias)){
 
-$prueba = {$Array.Value -like "*div*"}
+            if($arias -ne ""){
+
+                $FileHTML2 = $FileHTML2 | Where Line -NotMatch $arias | Select-Object Linenumber, Line;
+                }
+            }
+
+        $obj.tag = $tag;
+        $obj.array = $FileHTML2.LineNumber;
+        $obj.cantidad = $FileHTML2.LineNumber.Length;
+    
+
+        $p = ConvertTo-Json $obj; 
+        
+        if($cont -ne 0 -and $cont -ne $limitCont){
+            "`t`t," >> $OutputFileName;
+        }
+    
+        "`t`t" + $p >> $OutputFileName;
+        $cont--;
+        }
+    }
+
+"`t]" >> $OutputFileName;
+"}" >> $OutputFileName;
+
+#FIN
