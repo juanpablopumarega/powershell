@@ -22,16 +22,13 @@
     [Opcional] Path absoluto o relativo del directorio donde se generará el archivo de salida. Si no se informa se generará en el directorio de ejecución.
 
 .EXAMPLE
-    .\APL2Ejercicio2.ps1 -StopWords "C:\powershell\APL2Ejercicio2\files\StopWords.txt" -Entrada "C:\powershell\APL2Ejercicio2\files\Entrada.txt" -Resultado "C:\powershell\APL2Ejercicio2\files\"
+    .\APL2Ejercicio2.ps1 -StopWords ".\files\StopWords.txt" -Entrada ".\files\Entrada.txt" -Resultado ".\files\"
 
 #>
 Param(
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({
-                     if(-Not ($_ | Test-Path) ){
-                        throw "No existe el directorio o el File especificado";
-                        }
                      if(-Not ($_ | Test-Path -PathType Leaf) ){
                         throw "El parametro debe contener el nombre del file junto con el path";
                         }
@@ -42,9 +39,6 @@ Param(
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({
-                     if(-Not ($_ | Test-Path) ){
-                        throw "No existe el directorio o el File especificado";
-                        }
                      if(-Not ($_ | Test-Path -PathType Leaf) ){
                         throw "El parametro debe contener el nombre del file junto con el path";
                         }
@@ -63,16 +57,13 @@ Param(
     [string]$Resultado=$PWD
 )
 
-#Impresiones en pantalla de ejemplo
-    #Write-Output ("El parametro -StopWords contiene $StopWords")
-    #Write-Output ("El parametro -Entrada contiene $Entrada")
-    #Write-Output ("El parametro -Resultado contiene $Resultado")
 
 #Creamos un file temporal del fie de Entrada (si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
     if ((Get-Content -Path "$Entrada").length -ne $Null) {
         (Get-Content "$Entrada" -Raw).ToUpper() | Out-File "$Entrada.mayus"
     } else {
         Write-Output "El archivo $Entrada esta vacio"
+        exit 1
         }
 
 #Creamos un file temporal del file de StopWords(si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
