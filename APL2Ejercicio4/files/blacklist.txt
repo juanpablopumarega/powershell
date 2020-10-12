@@ -1,2 +1,4 @@
 Code
 Calculator
+Discord
+firefox
