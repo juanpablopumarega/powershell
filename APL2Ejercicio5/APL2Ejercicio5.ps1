@@ -27,6 +27,7 @@
 .EXAMPLE
 .\APL2Ejercicio5.ps1 -Aria ".\files\fileArias.txt" -Tags ".\files\fileTags.txt" -Web ".\files\fileHTML.txt" -Out ".\files"
 
+
 #>
 
 param([parameter(Mandatory=$true)]
@@ -74,9 +75,10 @@ param([parameter(Mandatory=$true)]
 $FileHTML = Get-Content $web;
 $FileArias = Get-Content $Aria;
 $FileTags = Get-Content $Tags;
-
 #Creamos el nombre de la variable de salida
-[string]$OutputFileName=$Out + "\accessibilityTest_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+[string]$OutputFileName=$Out + "\accessibilityTest_" + (Get-Date -Format "{yyyy-MM-dd_HH-mm-ss}") + ".out";
+
+
 
 $miClase = @{
     tag = "";
@@ -86,23 +88,28 @@ $miClase = @{
 
 $obj = [pscustomobject]::new($miClase);
 
-#Creamos un contador para saber cuantos Tags hay en el file y saber donde poner la coma en el archivo de salida
 $cont = 0;
 foreach($tag in (-split "$FileTags")){
     $cont++;
 }
+
+$flagChange = 0;
 
 $limitCont = $cont;
 
 "{" >> $OutputFileName;
 "`t["  >> $OutputFileName;
 
-foreach($tag in (-split "$FileTags")){ 
-
+foreach($tag in (-split "$FileTags")){
+    
     if($tag -ne ""){
+    
         $FileHTML2 = $FileHTML | Select-String -pattern "<$tag" | Select-Object Linenumber, Line;
+
         foreach($arias in (-split $FileArias)){
+
             if($arias -ne ""){
+
                 $FileHTML2 = $FileHTML2 | Where Line -NotMatch $arias | Select-Object Linenumber, Line;
                 }
             }
@@ -110,7 +117,12 @@ foreach($tag in (-split "$FileTags")){
         $obj.tag = $tag;
         $obj.array = $FileHTML2.LineNumber;
         $obj.cantidad = $FileHTML2.LineNumber.Length;
+
+        if ($obj.cantidad -gt 0){
+            $flagChange = 1;
+        }
     
+
         $p = ConvertTo-Json $obj; 
         
         if($cont -ne 0 -and $cont -ne $limitCont){
@@ -118,13 +130,19 @@ foreach($tag in (-split "$FileTags")){
         }
     
         "`t`t" + $p >> $OutputFileName;
-		
         $cont--;
-		
         }
     }
 
 "`t]" >> $OutputFileName;
 "}" >> $OutputFileName;
+
+Write-Output "El proceso finalizó.";
+if($flagChange -gt 0){
+    Write-Output "Se deben realizar cambios.";
+}else{
+    Write-Output "No es necesario realizar cambios.";
+}
+
 
 #FIN
