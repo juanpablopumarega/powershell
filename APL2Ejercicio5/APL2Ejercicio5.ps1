@@ -76,7 +76,7 @@ $FileArias = Get-Content $Aria;
 $FileTags = Get-Content $Tags;
 
 #Creamos el nombre de la variable de salida
-[string]$OutputFileName=$Out + "accessibilityTest_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+[string]$OutputFileName=$Out + "\accessibilityTest_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 $miClase = @{
     tag = "";
