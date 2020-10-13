@@ -25,7 +25,7 @@
     
 
 .EXAMPLE
-.\APL2Ejercicio5.ps1 -Aria ".\APL2Ejercicio5\files\fileArias.txt" -Tags ".\APL2Ejercicio5\files\fileTags.txt" -Web ".\APL2Ejercicio5\files\fileHTML.txt" -Out ".\APL2Ejercicio5\files"
+.\APL2Ejercicio5.ps1 -Aria ".\files\fileArias.txt" -Tags ".\files\fileTags.txt" -Web ".\files\fileHTML.txt" -Out ".\files"
 
 #>
 
