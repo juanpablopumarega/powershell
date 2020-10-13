@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
     Actividad Práctica de Laboratorio Nro: 2 - Primera Entrega
+    Ejercicio Nro: 5.
     Integrantes:
         # Fernández Durante Cynthya Alexandra   DNI:48693815
         # López Pumarega Juan Pablo             DNI:34593023
@@ -22,13 +23,12 @@
 
 .PARAMETER Out
     [Requerido] Path absoluto o relativo del archivo de salida.
-    
 
 .EXAMPLE
 .\APL2Ejercicio5.ps1 -Aria ".\files\fileArias.txt" -Tags ".\files\fileTags.txt" -Web ".\files\fileHTML.txt" -Out ".\files"
 
-
 #>
+
 
 param([parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]

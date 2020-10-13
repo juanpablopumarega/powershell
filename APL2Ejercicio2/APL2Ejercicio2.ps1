@@ -1,6 +1,7 @@
 ﻿<#
 .SYNOPSIS
     Actividad Práctica de Laboratorio Nro: 2 - Primera Entrega
+    Ejercicio Nro: 2
     Integrantes:
         # Fernández Durante Cynthya Alexandra   DNI:48693815
         # López Pumarega Juan Pablo             DNI:34593023

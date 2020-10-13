@@ -1,6 +1,7 @@
 ﻿<#
 .SYNOPSIS
     Actividad Práctica de Laboratorio Nro: 2 - Primera Entrega
+    Ejercicio Nro: 6.
     Integrantes:
         # Fernández Durante Cynthya Alexandra   DNI:48693815
         # López Pumarega Juan Pablo             DNI:34593023
@@ -30,7 +31,7 @@
     .\APL2Ejercicio6.ps1 -Comprimir -Historias ".\files2" -DirectorioZip ".\comprimidos"
 
 .EXAMPLE1
-    .\APL2Ejercicio6.ps1 -Descomprimir -Nombre "Andres Miranda" -Historias ".\files2" -DirectorioZip ".\comprimidos"
+    .\APL2Ejercicio6.ps1 -Descomprimir -Nombre "Nahuel Paiva" -Historias ".\files2" -DirectorioZip ".\comprimidos"
 #>
 
 
@@ -65,6 +66,7 @@ Param(
         # Me traigo la fecha de hoy
             $hoy = Get-Date -Format yyyy-MM-dd
             $cantidadDeArchivos=0
+
         # Iteramos el archivo de ultmias visitas para luego comprimir cuando la fecha es mayor a 30 dias    
             foreach ($paciente in (Get-Content -path "$Historias\ultimasvisitas.txt")) {
                 $nombre = $paciente.split("|")[0]
