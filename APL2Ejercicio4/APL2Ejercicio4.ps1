@@ -18,7 +18,7 @@
     [Opcional] Path absoluto o relativo del directorio donde se generará el archivo de salida. Si no se informa se generará en el directorio de ejecución
 
 .EXAMPLE
-    .\APL2Ejercicio4.ps1 -Blacklist "C:\powershell\APL2Ejercicio4\files\blacklist" -Resultado "C:\powershell\APL2Ejercicio3\files\"
+    .\APL2Ejercicio4.ps1 -Blacklist ".\files\blacklist" -Resultado ".\files\"
 
 #>
 

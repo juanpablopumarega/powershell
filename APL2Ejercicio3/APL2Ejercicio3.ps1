@@ -21,7 +21,7 @@
     [Opcional] Tamaño definido en KB para definir el umbral a analizar. Opcional. Si no es indicado, se considerará como umbral el promedio de peso de los archivos inspeccionados
 
 .EXAMPLE
-    .\APL2Ejercicio3.ps1 -Path "C:\powershell\APL2Ejercicio3\files\" -Resultado "C:\powershell\APL2Ejercicio3\files\" -Umbral "1"
+    .\APL2Ejercicio3.ps1 -Path ".\files\" -Resultado ".\files\" -Umbral "1"
 
 #>
 Param(
@@ -51,16 +51,11 @@ Param(
 )
 
 #Calculamos el promedio de los files si el umbral no existe
-    if($Umbral.Equals("-1")){
+    if($Umbral -eq -1){
         $Umbral=Get-ChildItem -Path $Path -File -Recurse | Measure-Object -Average Length | Select-Object -ExpandProperty average
     } else {
         $Umbral=$Umbral*1024
     }
-
-#Impresiones en pantalla de ejemplo
-    #Write-Output ("El parametro -Path contiene $Path")
-    #Write-Output ("El parametro -Umbral contiene $Umbral")
-    #Write-Output ("El parametro -Resultado contiene $Resultado")
 
 #Creamos el nombre de la variable de salida
     [string]$OutputFileName=$Resultado + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
@@ -93,7 +88,7 @@ Param(
     }
 
 #Buscamos los que superen el Umbral y los informamos
-    Write-Output "ARCHIVOS QUE SUPERAN EL UMBRAL: $Umbral" >> $OutputFileName
+    Write-Output "ARCHIVOS QUE SUPERAN EL UMBRAL: $Umbral Bytes" >> $OutputFileName
 
     $table | Where-Object {$_.Length -gt $Umbral} | Format-Table -Property Name,Directory,Length,LastWriteTime >> $OutputFileName
 
