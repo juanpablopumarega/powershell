@@ -23,6 +23,7 @@
 
 #>
 
+
 Param(
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
@@ -44,33 +45,7 @@ Param(
                     })]
     [string]$Resultado=$PWD
 )
-# Funcion para detener los procesos por nombre
-function global:Detener-Proceso()
-{
-    [CmdLetBinding()]
-    Param(
-            [Parameter(Mandatory=$True,
-            ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true)]
-            [String[]]$ProcessName
-    )
-#Los procesos fueron recibidos a traves del " | "
-    Process{
-        
-        foreach ($proc in $ProcessName)
-        {
-            
-            try{
-                    # Mato al proceso buscando por su nombre
-                    Stop-Process -Name "$proc" -Force
-                }
-            catch{
-                
-                Write-Warning " El proceso $proc no existe en el sistema"
-            }
-        }
-    }
-}
+
 
 # Funcion que lee el archivo de blacklist y escribe el archivo de salida.
 function global:Blacklist-Reader ()
@@ -80,21 +55,16 @@ function global:Blacklist-Reader ()
         $BlackContent = Get-Content "$Global:Blacklist"
         # Cargo y recorro un array con los nombres de los procesos a cerrar, y los envio a la funcion Detener-Proceso
         foreach( $proc in $BlackContent ){
-            try{
-                $match=$proc + ".exe"
 
-                # Guardo en un archivo como lista, fecha de creacion, pid, nombre
-                Get-WmiObject Win32_Process -Filter "name='$match'" | Select @{n='CreationDate'; e={$_.ConvertToDateTime($_.CreationDate)}}, ProcessId, Name, @{Name="UserName";Expression={$_.GetOwner().Domain+"\"+$_.GetOwner().User}}|Sort-Object UserName, Name, ProcessId | Format-Table -HideTableHeaders >> $Global:OutputFileName
+                # Guardo en un archivo como lista, fecha de creacion, pid, nombre                
+                Get-Process -Name $proc -IncludeUserName | Select-Object Name, UserName, StartTime, Id| Format-Table >> $Global:OutputFileName
 
                 # Envio los nombres de los procesos que se encontraron corriendo
-                get-process -Name $proc* | Select-Object -Unique -Property ProcessName | global:Detener-Proceso
-                }
-            catch{
-                 Write-Warning "El proceso $proc no existe en el sistema"
-            }
-        }
-        
-    
+                get-process -Name $proc | Select-Object -Unique -Property ProcessName #| global:Detener-Proceso
+                Stop-Process -Name $proc -Force
+                 
+            }      
+            
   }
 } 
 
@@ -125,3 +95,4 @@ Register-ObjectEvent -InputObject $Timer  -EventName Elapsed  -SourceIdentifier 
 }
 $Timer.Start()
 
+#FIN
