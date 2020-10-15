@@ -10,7 +10,7 @@
         # Salerti Natalia                       DNI:41559796        
     
 .DESCRIPTION
-    Identificar y matar procesos que se encuentran en el archivo de blacklist. Se informa en un archivo de log los eventos.
+    Comprimir historias clinicas segun última visita mayour a 30 dias. Descomprimir historia clinica según nombre de paciente.
 
 .PARAMETER Comprimir
     [Opcional] Opción de comprimir las historias clinicas de los pacientes que no realizaron una visita en los ultimos 30 dias.

@@ -25,6 +25,8 @@
     .\APL2Ejercicio3.ps1 -Path ".\files\" -Resultado ".\files\" -Umbral "1"
 
 #>
+
+
 Param(
     [parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]

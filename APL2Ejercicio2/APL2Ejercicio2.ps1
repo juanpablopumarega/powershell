@@ -60,7 +60,7 @@ Param(
 
 
 #Creamos un file temporal del fie de Entrada (si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
-    if ((Get-Content -Path "$Entrada").length -ne $Null) {
+    if ((Get-Content -Path "$Entrada")) {
         (Get-Content "$Entrada" -Raw).ToUpper() | Out-File "$Entrada.mayus"
     } else {
         Write-Output "El archivo $Entrada esta vacio"
@@ -68,10 +68,10 @@ Param(
         }
 
 #Creamos un file temporal del file de StopWords(si es que no esta vacio ya que da error en tal caso) en el directorio donde esta alojado el file a analizar pero convertido a mayuscula
-    if ((Get-Content -Path "$StopWords").length -ne $Null) {
+    if ((Get-Content -Path "$StopWords")) {
         (Get-Content "$StopWords" -Raw).ToUpper() | Out-File "$StopWords.mayus"
     } else {
-        Write-Output "El archivo $StopWords esta vacio"
+        Get-Content "$StopWords" | Out-File "$StopWords.mayus"
         }
 
 #Eliminamos las StopWords del file de Entrada.mayus (temporal)
@@ -96,10 +96,10 @@ Param(
     [string]$OutputFileName=$Resultado + "frecuencias_" + [System.IO.Path]::GetFileNameWithoutExtension($Entrada) + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 #Ordeno el contenido del hash y lo exporto a CSV
-    $palabras.GetEnumerator() | sort -Property Value -Descending | Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path $OutputFileName -Delimiter "," -NoTypeInformation -Encoding Unicode
+    $palabras.GetEnumerator() | Sort-Object -Property Value -Descending | Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path $OutputFileName -Delimiter "," -NoTypeInformation -Encoding Unicode
 
 #Muestro por pantalla los primeros 5 (incluyendo el titulo)
-    Get-Content "$OutputFileName" | Select -first 6
+    Get-Content "$OutputFileName" | Select-Object -first 6
 
 #Removiendo los archivos temporales creados
     Remove-Item -Path "$StopWords.mayus";
