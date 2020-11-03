@@ -55,7 +55,7 @@ Param(
                       }
                     return $true 
                     })]
-    [string]$Resultado=$PWD
+    [string]$Resultado=(Get-Location)
 )
 
 
@@ -93,7 +93,7 @@ Param(
     }
 
 #Creamos el nombre de la variable de salida
-    [string]$OutputFileName=$Resultado + "frecuencias_" + [System.IO.Path]::GetFileNameWithoutExtension($Entrada) + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+    [string]$OutputFileName=$Resultado + "\" + "frecuencias_" + [System.IO.Path]::GetFileNameWithoutExtension($Entrada) + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 #Ordeno el contenido del hash y lo exporto a CSV
     $palabras.GetEnumerator() | Sort-Object -Property Value -Descending | Select-Object -Property @{N='Palabra';E={$_.Key}},@{N='Ocurrencias';E={$_.Value}} | Export-Csv -Path $OutputFileName -Delimiter "," -NoTypeInformation -Encoding Unicode

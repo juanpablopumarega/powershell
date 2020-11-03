@@ -50,7 +50,7 @@ Param(
                       }
                     return $true 
                     })]
-    [string]$Resultado=$PWD
+    [string]$Resultado=(Get-Location)
 )
 
 #Calculamos el promedio de los files si el umbral no existe
@@ -61,7 +61,7 @@ Param(
     }
 
 #Creamos el nombre de la variable de salida
-    [string]$OutputFileName=$Resultado + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
+    [string]$OutputFileName=$Resultado + "\" + "resultado" + "_" + (Get-Date -Format yyyy-mm-dd_hhmmss) + ".out";
 
 #Armo una tabla con los archivos a analizar
     $table = Get-ChildItem -Path $Path -File -Recurse #| Select-Object Name,Directory,Length,LastWriteTime
