@@ -1,13 +1,6 @@
 ﻿<#
 .SYNOPSIS
     Actividad Práctica de Laboratorio Nro: 2 - Primera Entrega
-    Ejercicio Nro: 6.
-    Integrantes:
-        # Fernández Durante Cynthya Alexandra   DNI:48693815
-        # López Pumarega Juan Pablo             DNI:34593023
-        # Miranda Andres                        DNI:32972232
-        # Paiva Gordillo Nahuel Alejo           DNI:38455227
-        # Salerti Natalia                       DNI:41559796        
     
 .DESCRIPTION
     Comprimir historias clinicas segun última visita mayour a 30 dias. Descomprimir historia clinica según nombre de paciente.
